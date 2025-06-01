@@ -1,0 +1,11 @@
+{
+  "name": "firebase-realtime-api",
+  "version": "1.0.0",
+  "main": "api.js",
+  "scripts": {
+    "start": "node api.js"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
