@@ -11,6 +11,7 @@ module.exports = async (req, res) => {
 
   try {
     let response;
+
     if (action === "put") {
       response = await fetch(firebaseUrl, {
         method: "PUT",
@@ -27,8 +28,10 @@ module.exports = async (req, res) => {
       response = await fetch(firebaseUrl, {
         method: "DELETE"
       });
+    } else if (action === "get") {
+      response = await fetch(firebaseUrl);
     } else {
-      return res.status(400).json({ error: "Invalid action. Use put, edit, or delete" });
+      return res.status(400).json({ error: "Invalid action. Use put, edit, delete, or get" });
     }
 
     const result = await response.json();
