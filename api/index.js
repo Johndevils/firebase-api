@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: "Missing 'url', 'action', or 'path'" });
   }
 
-  const firebaseUrl = `${url}/${path}.json`;
+  let firebaseUrl = `${url}/${path}.json`;
 
   try {
     let response;
@@ -30,8 +30,14 @@ module.exports = async (req, res) => {
       });
     } else if (action === "get") {
       response = await fetch(firebaseUrl);
+    } else if (action === "add") {
+      response = await fetch(firebaseUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: data || "{}"
+      });
     } else {
-      return res.status(400).json({ error: "Invalid action. Use put, edit, delete, or get" });
+      return res.status(400).json({ error: "Invalid action. Use put, edit, delete, get, or add" });
     }
 
     const result = await response.json();
