@@ -1,4 +1,4 @@
- #Firebase REST API Gateway
+ ## Firebase REST API Gateway
 
 A simple proxy to perform Firebase Realtime Database operations via URL parameters. Hosted on Vercel.
 
