@@ -1,98 +1,63 @@
-# Firebase Api (Vercel Serverless Function)
+ #Firebase REST API Gateway
 
-This is a REST API proxy deployed on Vercel that allows you to interact with a Firebase Realtime Database via standard HTTP GET requests. This is useful for environments that have trouble with the Firebase SDK or need a simple URL-based bridge.
+A simple proxy to perform Firebase Realtime Database operations via URL parameters. Hosted on Vercel.
 
-## 📍 Deployment URL
-`https://your-project-name.vercel.app/api/your-file-name`
+## 🔗 Base Endpoint
+`https://firebase-api-azure.vercel.app/`
 
 ---
 
-## 🛠 Usage & Parameters
+## 🛠 API Parameters
 
-All requests are sent via **GET**, and the operation is determined by the `action` query parameter.
-
-| Parameter | Required | Description |
+| Param | Required | Description |
 | :--- | :--- | :--- |
-| `url` | **Yes** | Your Firebase Realtime DB URL (e.g., `https://name.firebaseio.com`) |
-| `path` | **Yes** | The database path (e.g., `users/1`) |
-| `action` | **Yes** | The operation: `get`, `add`, `put`, `edit`, `delete` |
-| `data` | No | Required for `add`, `put`, `edit`. Must be a **URL-encoded JSON string**. |
+| `url` | **Yes** | Your Firebase URL (e.g. `https://name.firebaseio.com`) |
+| `action` | **Yes** | Operation: `get`, `add`, `put`, `edit`, `delete` |
+| `path` | **Yes** | Database path (e.g. `users` or `posts/123`) |
+| `data` | No | JSON data (required for `add`, `put`, `edit`) |
 
 ---
 
-## 🚀 Examples
+## 📮 Usage Examples
 
-### 1. Fetch Data (`get`)
-`GET`
+### 1. Add Data (POST/Push)
+Equivalent to `push()`. Creates a unique auto-ID.
 ```text
-https://your-app.vercel.app/api/proxy?action=get&url=https://db.firebaseio.com&path=users/admin
+https://firebase-api-azure.vercel.app/?url=https://test.firebaseio.com&action=add&path=users&data={"name":"John","age":25}
 ```
 
-### 2. Add to a List (`add`)
-Equivalent to Firebase `.push()`. Creates a unique ID automatically.
-`GET`
+### 2. Get Data (GET)
 ```text
-https://your-app.vercel.app/api/proxy?action=add&url=https://db.firebaseio.com&path=logs&data={"msg":"Login Success"}
+https://firebase-api-azure.vercel.app/?url=https://test.firebaseio.com&action=get&path=users
 ```
 
-### 3. Overwrite Data (`put`)
-`GET`
+### 3. Overwrite Data (PUT)
 ```text
-https://your-app.vercel.app/api/action=put&url=https://db.firebaseio.com&path=status&data="online"
+https://firebase-api-azure.vercel.app/?url=https://test.firebaseio.com&action=put&path=settings/theme&data="dark"
 ```
 
-### 4. Update Specific Fields (`edit`)
-Equivalent to Firebase `.update()`.
-`GET`
+### 4. Update Specific Fields (PATCH)
 ```text
-https://your-app.vercel.app/api/action=edit&url=https://db.firebaseio.com&path=users/1&data={"lastSeen":"12:00"}
+https://firebase-api-azure.vercel.app/?url=https://test.firebaseio.com&action=edit&path=users/id1&data={"status":"active"}
 ```
 
-### 5. Remove Data (`delete`)
-`GET`
+### 5. Delete Data (DELETE)
 ```text
-https://your-app.vercel.app/api/action=delete&url=https://db.firebaseio.com&path=temp_data
+https://firebase-api-azure.vercel.app/?url=https://test.firebaseio.com&action=delete&path=users/id1
 ```
 
 ---
 
-## 📦 Local Setup & Deployment
-
-1. **Clone your repository**
-2. **Install dependencies**:
-   ```bash
-   npm install node-fetch@2
-   ```
-   *(Note: Use node-fetch@2 for CommonJS `require` support in Node.js)*
-3. **Project Structure**:
-   ```text
-   project/
-   ├── api/
-   │   └── index.js  <-- (Your code goes here)
-   ├── package.json
-   └── vercel.json
-   ```
-4. **Deploy**:
-   ```bash
-   vercel --prod
-   ```
-
-## 🔒 Security Warning
-**Important:** Your current code allows *anyone* who knows your Vercel URL to read or delete data from *any* Firebase database if they have the URL. 
-
-To secure this:
-1. Ensure your **Firebase Realtime Database Rules** are set correctly.
-2. Consider adding an API Key check in your code:
-   ```javascript
-   if (req.query.key !== "MY_SECRET_PASSWORD") return res.status(401).send("Unauthorized");
-   ```
-3. Use `encodeURIComponent()` when passing JSON data in the `data` parameter to avoid breaking the URL.
-
-## 📄 Response Format
-All responses return a JSON object:
+## 📝 Response Format
 ```json
 {
   "success": true,
-  "result": { ... firebase_data ... }
+  "result": {
+    "name": "-N123456789",
+    "status": "active"
+  }
 }
 ```
+
+## ⚠️ Security Warning
+Note: This API is open. To protect your data, ensure your **Firebase Realtime Database Rules** are locked down or add a `key` parameter to this script to authorize requests.
